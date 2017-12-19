@@ -92,6 +92,14 @@ void JointStateListener::callbackFixedJoint(const ros::TimerEvent& e)
 
 void JointStateListener::callbackJointState(const JointStateConstPtr& state)
 {
+  static ros::Time last_callback = ros::Time();
+  if (last_callback.isValid())
+  {
+    ros::Duration elapsed = ros::Time::now() - last_callback;
+    ROS_WARN_STREAM("Elapsed time is " << elapsed);
+  }
+  last_callback = ros::Time::now();
+
   if (state->name.size() != state->position.size()){
     if (state->position.empty()){
       const int throttleSeconds = 300;
